@@ -13,7 +13,7 @@ public class MainActivity extends AppCompatActivity {
     TextView easy = null;
     TextView medium = null;
     TextView difficult = null;
-    int gameStatus = 0;
+    int gameStatus = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this, Game.class);
-                gameStatus = 1;
+                gameStatus = 0;
                 i.putExtra(GAME_MODE, gameStatus);
                 MainActivity.this.startActivity(i);
 
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this, Game.class);
-                gameStatus = 2;
+                gameStatus = 1;
                 i.putExtra(GAME_MODE, gameStatus);
                 MainActivity.this.startActivity(i);
 
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this, Game.class);
-                gameStatus = 3;
+                gameStatus = 2;
                 i.putExtra(GAME_MODE, gameStatus);
                 MainActivity.this.startActivity(i);
 

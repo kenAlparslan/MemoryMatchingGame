@@ -24,16 +24,30 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
 
 public class Game extends AppCompatActivity {
 
     public static final String GAME_MODE = "com.example.application.example.GAME_MODE";
     private static final String TAG = Game.class.getName();
-    int desaultVal = 0;
+    int desaultVal = -1;
     TableLayout table = null;
     TableRow tr = null;
     ImageView iv = null;
     int gameStatus;
+    int limit;
+    ArrayList<Integer> shuffleIndex;
+    ArrayList<Integer> easy = new ArrayList<>(
+            Arrays.asList(0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7)
+    );
+    ArrayList<Integer> medium = new ArrayList<>(
+            Arrays.asList(0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9)
+    );
+
+    ArrayList<Integer> difficult = new ArrayList<>(
+            Arrays.asList(0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11)
+    );
 
 
     @Override
@@ -42,17 +56,21 @@ public class Game extends AppCompatActivity {
         Intent intent = getIntent();
         gameStatus = intent.getIntExtra(GAME_MODE, desaultVal);
 
-        if(gameStatus == 0) {
+        if(gameStatus == -1) {
             Log.d("In GAME Class", "Intent returned default value");
-        } else if(gameStatus == 1) {
+        } else if(gameStatus == 0) {
             setContentView(R.layout.grid_4x4);
-        } else if(gameStatus == 2) {
+            shuffleIndex = easy;
+        } else if(gameStatus == 1) {
             setContentView(R.layout.grid_5x4);
-        } else if(gameStatus == 3) {
+            shuffleIndex = medium;
+        } else if(gameStatus == 2) {
             setContentView(R.layout.grid_6x4);
+            shuffleIndex = difficult;
         }
 
         sendAndRequestResponse();
+
 
 
     }
@@ -60,6 +78,7 @@ public class Game extends AppCompatActivity {
     private void setUpPuzzle(ArrayList<String> al) {
 
         table = findViewById(R.id.gameTable);
+        Random rand = new Random();
         int rowCount = table.getChildCount();
         int columnCount;
         int index = 0;
@@ -77,9 +96,10 @@ public class Game extends AppCompatActivity {
                     View columnView = tableRow.getChildAt(j);
                     if(columnView instanceof ImageView)
                     {
+                        index = rand.nextInt(shuffleIndex.size());
                         ImageView iv = (ImageView)columnView;
-                        Picasso.get().load(al.get(index)).resize(70,80).into(iv);
-                        ++index;
+                        Picasso.get().load(al.get(shuffleIndex.get(index))).resize(70,80).into(iv);
+                        shuffleIndex.remove(index);
                     }
                 }
             }
@@ -94,6 +114,13 @@ public class Game extends AppCompatActivity {
         String url = "https://shopicruit.myshopify.com/admin/products.json?page=1&access_token=c32313df0d0ef512ca64d5b336a0d7c6";
         final ArrayList<String> al = new ArrayList<>();
 
+        if(gameStatus == 0) {
+            limit = 8;
+        } else if(gameStatus == 1) {
+            limit = 10;
+        } else if(gameStatus == 2) {
+            limit = 13;
+        }
         //RequestQueue initialized
         RequestQueue mRequestQueue = Volley.newRequestQueue(this);
 
@@ -107,7 +134,8 @@ public class Game extends AppCompatActivity {
                     JSONObject obj = new JSONObject(response);
                     JSONArray arr = obj.getJSONArray("products");
                     int index = 0;
-                    for(int i=0; i<25; ++i) {
+
+                    for(int i=0; i<limit; ++i) {
                         if (i == 11) {
                             continue; // 10 and 11 are the same pic
                         }
