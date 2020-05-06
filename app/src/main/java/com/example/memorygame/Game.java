@@ -17,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,6 +62,7 @@ public class Game extends AppCompatActivity {
         table = findViewById(R.id.gameTable);
         int rowCount = table.getChildCount();
         int columnCount;
+        int index = 0;
         View rowView;
         for(int i =0 ;i < rowCount;i++) {
             rowView = table.getChildAt(i);
@@ -75,8 +77,9 @@ public class Game extends AppCompatActivity {
                     View columnView = tableRow.getChildAt(j);
                     if(columnView instanceof ImageView)
                     {
-
-
+                        ImageView iv = (ImageView)columnView;
+                        Picasso.get().load(al.get(index)).resize(70,80).into(iv);
+                        ++index;
                     }
                 }
             }
@@ -103,11 +106,15 @@ public class Game extends AppCompatActivity {
                 try {
                     JSONObject obj = new JSONObject(response);
                     JSONArray arr = obj.getJSONArray("products");
-
-                    for(int i=0; i<12; ++i) {
+                    int index = 0;
+                    for(int i=0; i<25; ++i) {
+                        if (i == 11) {
+                            continue; // 10 and 11 are the same pic
+                        }
                         obj = arr.getJSONObject(i);
                         obj = obj.getJSONObject("image");
-                        al.add(i, obj.getString("src"));
+                        al.add(index, obj.getString("src"));
+                        ++index;
                     }
                     setUpPuzzle(al);
                     //Toast.makeText(getApplicationContext(), "Response :" + al.get(0) , Toast.LENGTH_LONG).show();//display the response on screen
