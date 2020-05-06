@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TableLayout
+        android:id="@+id/gameTable"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,6 +30,7 @@
                 android:layout_margin="2dp"
                 android:background="@drawable/grid_border"
                 android:contentDescription="@string/description"
+                android:layout_column="0"
                 >
 
             </ImageView>
@@ -40,7 +42,8 @@
                 android:padding="5dip"
                 android:layout_margin="2dp"
                 android:background="@drawable/grid_border"
-                android:contentDescription="@string/description">
+                android:contentDescription="@string/description"
+                >
             </ImageView>
 
             <ImageView
