@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Memory Game</string>
+    <string name="callToAction">Select Difficulty</string>
+    <string name="easy">Easy</string>
+    <string name="medium">Medium</string>
+    <string name="difficult">Difficult</string>
+    <string name="description">Picture of Shopify Item</string>
+</resources>
