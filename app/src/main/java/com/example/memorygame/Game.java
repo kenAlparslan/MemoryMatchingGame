@@ -40,7 +40,9 @@ public class Game extends AppCompatActivity {
     int limit;
     int win = -1;
     View.OnClickListener clickListener;
-    ArrayList<Integer> shuffleIndex;
+    ArrayList<Integer> shuffleIndex; // will be populated with players game mode: easy, medium, hard
+
+    // used for the shuffle logic
     ArrayList<Integer> easy = new ArrayList<>(
             Arrays.asList(0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7)
     );
@@ -59,6 +61,7 @@ public class Game extends AppCompatActivity {
         Intent intent = getIntent();
         gameStatus = intent.getIntExtra(GAME_MODE, desaultVal);
 
+        // initialize variables
         if(gameStatus == -1) {
             Log.d("In GAME Class", "Intent returned default value");
         } else if(gameStatus == 0) {
@@ -75,10 +78,10 @@ public class Game extends AppCompatActivity {
             win = shuffleIndex.size();
         }
 
-        sendAndRequestResponse();
+        sendAndRequestResponse(); // make api call
 
         clickListener = new View.OnClickListener() {
-            public void onClick(View v) {
+            public void onClick(View v) { // game click
 
                 Runnable r = new MyRunnable(v);
                 new Thread(r).start();
@@ -87,13 +90,13 @@ public class Game extends AppCompatActivity {
 
     }
 
-    private void setUpPuzzle(ArrayList<String> al) {
+    private void setUpPuzzle(ArrayList<String> al) { // set up the grid, download images
 
         Thread setupThread = new Thread(){
             @Override
             public void run() {
                 try {
-                    Thread.sleep(5000); // As I am using LENGTH_LONG in Toast
+                    Thread.sleep(7000);
                     table = findViewById(R.id.gameTable);
                     int rowCount = table.getChildCount();
                     int columnCount;
@@ -165,7 +168,7 @@ public class Game extends AppCompatActivity {
 
     }
 
-    public class MyRunnable implements Runnable {
+    public class MyRunnable implements Runnable { // game logic
 
         private ImageView imageView;
 
@@ -241,7 +244,7 @@ public class Game extends AppCompatActivity {
             }
         }
 
-        public void imageToggle(int mode) {
+        public void imageToggle(int mode) { // toggle onClickListener between choices
 
             table = findViewById(R.id.gameTable);
             int rowCount = table.getChildCount();
@@ -280,7 +283,7 @@ public class Game extends AppCompatActivity {
 
         }
 
-        public int checkWin() {
+        public int checkWin() { // check if all matches are found
 
             table = findViewById(R.id.gameTable);
             int rowCount = table.getChildCount();
@@ -317,7 +320,7 @@ public class Game extends AppCompatActivity {
     }
 
 
-    private void sendAndRequestResponse() {
+    private void sendAndRequestResponse() { // make api call
         String url = "https://shopicruit.myshopify.com/admin/products.json?page=1&access_token=c32313df0d0ef512ca64d5b336a0d7c6";
         final ArrayList<String> al = new ArrayList<>();
 

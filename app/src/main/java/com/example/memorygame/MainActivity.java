@@ -1,3 +1,9 @@
+// To do:
+// make sure pictures load fully before giving player 5 sec
+// improve ui
+// modularity && design pattern
+// test ui for the landscape on your phone, emulators does not support landscape mode
+
 package com.example.memorygame;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         }
         setContentView(R.layout.grid_choice);
 
+        // load easy
         easy = findViewById(R.id.grid4x4);
         easy.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -36,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // load medium
         medium = findViewById(R.id.grid5x4);
         medium.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // load difficult
         difficult = findViewById(R.id.grid6x4);
         difficult.setOnClickListener(new View.OnClickListener() {
             @Override

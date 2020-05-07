@@ -22,7 +22,7 @@ public class LastPage extends AppCompatActivity {
 
         again.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) { // user wants to play again
                 Intent i = new Intent(LastPage.this, MainActivity.class);
                 LastPage.this.startActivity(i);
                 finish();
@@ -31,7 +31,7 @@ public class LastPage extends AppCompatActivity {
 
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) { // exit app
                 Intent intent = new Intent(LastPage.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("Exit", true);
