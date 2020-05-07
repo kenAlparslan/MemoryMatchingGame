@@ -1,8 +1,10 @@
 package com.example.memorygame;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TableLayout;
@@ -32,9 +34,12 @@ public class Game extends AppCompatActivity {
     public static final String GAME_MODE = "com.example.application.example.GAME_MODE";
     private static final String TAG = Game.class.getName();
     int desaultVal = -1;
+    ArrayList<ImageView> imgs = new ArrayList<>();
     TableLayout table = null;
     int gameStatus;
     int limit;
+    int win = 0;
+    View.OnClickListener clickListener;
     ArrayList<Integer> shuffleIndex;
     ArrayList<Integer> easy = new ArrayList<>(
             Arrays.asList(0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7)
@@ -59,6 +64,7 @@ public class Game extends AppCompatActivity {
         } else if(gameStatus == 0) {
             setContentView(R.layout.grid_4x4);
             shuffleIndex = easy;
+            win = shuffleIndex.size();
         } else if(gameStatus == 1) {
             setContentView(R.layout.grid_5x4);
             shuffleIndex = medium;
@@ -69,11 +75,53 @@ public class Game extends AppCompatActivity {
 
         sendAndRequestResponse();
 
+        clickListener = new View.OnClickListener() {
+            public void onClick(View v) {
 
+                Runnable r = new MyRunnable(v);
+                new Thread(r).start();
+            }
+        };
 
     }
 
     private void setUpPuzzle(ArrayList<String> al) {
+
+        Thread setupThread = new Thread(){
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(5000); // As I am using LENGTH_LONG in Toast
+                    table = findViewById(R.id.gameTable);
+                    int rowCount = table.getChildCount();
+                    int columnCount;
+                    View rowView;
+                    for(int i =0 ;i < rowCount;i++) {
+                        rowView = table.getChildAt(i);
+
+                        if(rowView instanceof TableRow) {
+                            TableRow tableRow = (TableRow)rowView;
+                            columnCount = tableRow.getChildCount();
+
+                            for(int j = 0;j<columnCount;j++)
+                            {
+                                View columnView = tableRow.getChildAt(j);
+                                if(columnView instanceof ImageView)
+                                {
+                                    ImageView iv = (ImageView)columnView;
+                                    iv.setColorFilter(Color.argb(255, 255, 255, 255));
+                                    iv.setTag(0);
+
+                                }
+                            }
+                        }
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
 
         table = findViewById(R.id.gameTable);
         Random rand = new Random();
@@ -97,47 +145,112 @@ public class Game extends AppCompatActivity {
                         index = rand.nextInt(shuffleIndex.size());
                         ImageView iv = (ImageView)columnView;
                         Picasso.get().load(al.get(shuffleIndex.get(index))).resize(70,80).into(iv);
-                        //iv.setTag(al.get(shuffleIndex.get(index))); // set tag to url, cover image, download image again onclick
+                        iv.setContentDescription(al.get(shuffleIndex.get(index)));
                         shuffleIndex.remove(index);
+                        iv.setOnClickListener(clickListener);
+
                     }
                 }
             }
 
         }
 
-        Toast.makeText(getApplicationContext(), "You have 5 seconds to memorize the cards" , Toast.LENGTH_LONG).show();//display the response on screen
-        play();
+        Toast toast = Toast.makeText(getApplicationContext(), "You have 5 seconds to memorize the cards" , Toast.LENGTH_LONG);//display the response on screen
+        toast.setGravity(Gravity.TOP,0,0);
+        toast.show();
+        setupThread.start();
+
 
     }
 
-    private void play() {
+    public class MyRunnable implements Runnable {
 
-        table = findViewById(R.id.gameTable);
-        int rowCount = table.getChildCount();
-        int columnCount;
-        View rowView;
-        for(int i =0 ;i < rowCount;i++) {
-            rowView = table.getChildAt(i);
+        private ImageView imageView;
 
-            if(rowView instanceof TableRow) {
-                TableRow tableRow = (TableRow)rowView;
-                columnCount = tableRow.getChildCount();
+        public MyRunnable(Object parameter) {
+            if(parameter instanceof ImageView) {
+                imageView = (ImageView) parameter;
+            }
+        }
 
-                for(int j = 0;j<columnCount;j++)
-                {
-                    View columnView = tableRow.getChildAt(j);
-                    if(columnView instanceof ImageView)
+        public void run() {
+            try {
+
+                ImageView iv = imageView;
+                if(iv.getTag().equals(1)) {
+                    iv.setColorFilter(Color.argb(255, 255, 255, 255));
+                    iv.setTag(0);
+                } else {
+                    iv.setColorFilter(null);
+                    iv.setTag(1);
+                    imgs.add(iv);
+                }
+
+                if(imgs.size() == 2) {
+                    if(imgs.get(0).getContentDescription() == imgs.get(1).getContentDescription()) {
+                        imgs.get(0).setEnabled(false);
+                        imgs.get(1).setEnabled(false);
+                        imgs.get(0).setTag(2);
+                        imgs.get(1).setTag(2);
+
+                        Log.d("------------------", "found a match!!!");
+                        imgs.clear();
+                    }
+                    else {
+                        Thread.sleep(1000);
+                        imgs.get(0).setColorFilter(Color.argb(255, 255, 255, 255));
+                        imgs.get(1).setColorFilter(Color.argb(255, 255, 255, 255));
+                        imgs.get(0).setTag(0);
+                        imgs.get(1).setTag(0);
+                        imgs.clear();
+                    }
+                }
+
+                if(checkWin() == 1) {
+                    Thread.sleep(500);
+                    Log.d("!!!!!!!!!!!!!!!!!!!", "You WON!!!!!");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        public int checkWin() {
+
+            table = findViewById(R.id.gameTable);
+            int rowCount = table.getChildCount();
+            int columnCount;
+            int wincount=0;
+            View rowView;
+            for(int i =0 ;i < rowCount;i++) {
+                rowView = table.getChildAt(i);
+
+                if(rowView instanceof TableRow) {
+                    TableRow tableRow = (TableRow)rowView;
+                    columnCount = tableRow.getChildCount();
+
+                    for(int j = 0;j<columnCount;j++)
                     {
-                        //ImageView iv = (ImageView)columnView;
-
+                        View columnView = tableRow.getChildAt(j);
+                        if(columnView instanceof ImageView)
+                        {
+                            ImageView tmp = (ImageView)columnView;
+                            if(tmp.getTag().equals(2)) {
+                                ++wincount;
+                            }
+                        }
                     }
                 }
             }
+            if(wincount == win) {
+                return 1;
+            }
 
+
+            return 0;
         }
-
-
     }
+
 
     private void sendAndRequestResponse() {
         String url = "https://shopicruit.myshopify.com/admin/products.json?page=1&access_token=c32313df0d0ef512ca64d5b336a0d7c6";
