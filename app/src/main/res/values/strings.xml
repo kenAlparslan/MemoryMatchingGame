@@ -5,4 +5,7 @@
     <string name="medium">Medium</string>
     <string name="difficult">Difficult</string>
     <string name="description">Picture of Shopify Item</string>
+    <string name="winStatus">You Win!!!</string>
+    <string name="again">Play Again</string>
+    <string name="exit">Exit</string>
 </resources>

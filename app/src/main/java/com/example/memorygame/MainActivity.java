@@ -18,6 +18,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if( getIntent().getBooleanExtra("Exit", false)){
+            finish();
+        }
         setContentView(R.layout.grid_choice);
 
         easy = findViewById(R.id.grid4x4);
@@ -28,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
                 gameStatus = 0;
                 i.putExtra(GAME_MODE, gameStatus);
                 MainActivity.this.startActivity(i);
+                finish();
 
             }
         });
@@ -40,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
                 gameStatus = 1;
                 i.putExtra(GAME_MODE, gameStatus);
                 MainActivity.this.startActivity(i);
-
+                finish();
             }
         });
 
@@ -52,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 gameStatus = 2;
                 i.putExtra(GAME_MODE, gameStatus);
                 MainActivity.this.startActivity(i);
-
+                finish();
             }
         });
 

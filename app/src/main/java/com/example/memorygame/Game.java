@@ -38,7 +38,7 @@ public class Game extends AppCompatActivity {
     TableLayout table = null;
     int gameStatus;
     int limit;
-    int win = 0;
+    int win = -1;
     View.OnClickListener clickListener;
     ArrayList<Integer> shuffleIndex;
     ArrayList<Integer> easy = new ArrayList<>(
@@ -68,9 +68,11 @@ public class Game extends AppCompatActivity {
         } else if(gameStatus == 1) {
             setContentView(R.layout.grid_5x4);
             shuffleIndex = medium;
+            win = shuffleIndex.size();
         } else if(gameStatus == 2) {
             setContentView(R.layout.grid_6x4);
             shuffleIndex = difficult;
+            win = shuffleIndex.size();
         }
 
         sendAndRequestResponse();
@@ -156,7 +158,7 @@ public class Game extends AppCompatActivity {
         }
 
         Toast toast = Toast.makeText(getApplicationContext(), "You have 5 seconds to memorize the cards" , Toast.LENGTH_LONG);//display the response on screen
-        toast.setGravity(Gravity.TOP,0,0);
+        toast.setGravity(Gravity.TOP,0,20);
         toast.show();
         setupThread.start();
 
@@ -193,11 +195,11 @@ public class Game extends AppCompatActivity {
                         imgs.get(0).setTag(2);
                         imgs.get(1).setTag(2);
 
-                        Log.d("------------------", "found a match!!!");
+                        //Log.d("------------------", "found a match!!!");
                         imgs.clear();
                     }
                     else {
-                        Thread.sleep(1000);
+                        Thread.sleep(750);
                         imgs.get(0).setColorFilter(Color.argb(255, 255, 255, 255));
                         imgs.get(1).setColorFilter(Color.argb(255, 255, 255, 255));
                         imgs.get(0).setTag(0);
@@ -208,7 +210,10 @@ public class Game extends AppCompatActivity {
 
                 if(checkWin() == 1) {
                     Thread.sleep(500);
-                    Log.d("!!!!!!!!!!!!!!!!!!!", "You WON!!!!!");
+                    Intent i = new Intent(Game.this, LastPage.class);
+                    Game.this.startActivity(i);
+                    //Log.d("!!!!!!!!!!!!!!!!!!!", "You WON!!!!!");
+                    finish();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
