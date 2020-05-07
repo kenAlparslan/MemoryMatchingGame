@@ -11,8 +11,8 @@
 No Matches:
 ![alt text](/images/noMatch.PNG "No Matches made")
 
-Some Matches:
+Some Matches:  
 ![alt text](/images/someMatches.PNG "Some Matches made")
 
-Win:
+Win:        
 ![alt text](/images/win.PNG "Player Wins")
