@@ -180,12 +180,31 @@ public class Game extends AppCompatActivity {
 
                 ImageView iv = imageView;
                 if(iv.getTag().equals(1)) {
-                    iv.setColorFilter(Color.argb(255, 255, 255, 255));
-                    iv.setTag(0);
+                    if(imgs.size() == 1) {
+                        if(imgs.get(0) != iv) {
+                            iv.setColorFilter(Color.argb(255, 255, 255, 255));
+                            iv.setTag(0);
+                        }
+                    }
+                    else {
+                        iv.setColorFilter(Color.argb(255, 255, 255, 255));
+                        iv.setTag(0);
+                    }
+
                 } else {
-                    iv.setColorFilter(null);
-                    iv.setTag(1);
-                    imgs.add(iv);
+                    if(imgs.size() == 1) { // user should not click on the same image
+                        if(imgs.get(0) != iv) {
+                            iv.setColorFilter(null);
+                            iv.setTag(1);
+                            imgs.add(iv);
+                        }
+                    }
+                    else {
+                        iv.setColorFilter(null);
+                        iv.setTag(1);
+                        imgs.add(iv);
+                    }
+
                 }
 
                 if(imgs.size() == 2) {
@@ -199,7 +218,9 @@ public class Game extends AppCompatActivity {
                         imgs.clear();
                     }
                     else {
+                        imageToggle(0);
                         Thread.sleep(750);
+                        imageToggle(1);
                         imgs.get(0).setColorFilter(Color.argb(255, 255, 255, 255));
                         imgs.get(1).setColorFilter(Color.argb(255, 255, 255, 255));
                         imgs.get(0).setTag(0);
@@ -218,6 +239,45 @@ public class Game extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+
+        public void imageToggle(int mode) {
+
+            table = findViewById(R.id.gameTable);
+            int rowCount = table.getChildCount();
+            int columnCount;
+            View rowView;
+            for(int i =0 ;i < rowCount;i++) {
+                rowView = table.getChildAt(i);
+
+                if(rowView instanceof TableRow) {
+                    TableRow tableRow = (TableRow)rowView;
+                    columnCount = tableRow.getChildCount();
+
+
+                    for(int j = 0;j<columnCount;j++)
+                    {
+                        View columnView = tableRow.getChildAt(j);
+                        if(columnView instanceof ImageView)
+                        {
+                            ImageView iv = (ImageView)columnView;
+                            if(mode == 0) { // disable
+
+                                if(iv.getTag().equals(0) || iv.getTag().equals(1)) {
+                                    iv.setOnClickListener(null);
+                                }
+                            } else if(mode == 1) { // enable
+                                if(iv.getTag().equals(0) || iv.getTag().equals(1)) {
+                                    iv.setOnClickListener(clickListener);
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+
+
         }
 
         public int checkWin() {
