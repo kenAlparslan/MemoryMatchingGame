@@ -33,8 +33,6 @@ public class Game extends AppCompatActivity {
     private static final String TAG = Game.class.getName();
     int desaultVal = -1;
     TableLayout table = null;
-    TableRow tr = null;
-    ImageView iv = null;
     int gameStatus;
     int limit;
     ArrayList<Integer> shuffleIndex;
@@ -99,6 +97,7 @@ public class Game extends AppCompatActivity {
                         index = rand.nextInt(shuffleIndex.size());
                         ImageView iv = (ImageView)columnView;
                         Picasso.get().load(al.get(shuffleIndex.get(index))).resize(70,80).into(iv);
+                        //iv.setTag(al.get(shuffleIndex.get(index))); // set tag to url, cover image, download image again onclick
                         shuffleIndex.remove(index);
                     }
                 }
@@ -106,6 +105,36 @@ public class Game extends AppCompatActivity {
 
         }
 
+        Toast.makeText(getApplicationContext(), "You have 5 seconds to memorize the cards" , Toast.LENGTH_LONG).show();//display the response on screen
+        play();
+
+    }
+
+    private void play() {
+
+        table = findViewById(R.id.gameTable);
+        int rowCount = table.getChildCount();
+        int columnCount;
+        View rowView;
+        for(int i =0 ;i < rowCount;i++) {
+            rowView = table.getChildAt(i);
+
+            if(rowView instanceof TableRow) {
+                TableRow tableRow = (TableRow)rowView;
+                columnCount = tableRow.getChildCount();
+
+                for(int j = 0;j<columnCount;j++)
+                {
+                    View columnView = tableRow.getChildAt(j);
+                    if(columnView instanceof ImageView)
+                    {
+                        //ImageView iv = (ImageView)columnView;
+
+                    }
+                }
+            }
+
+        }
 
 
     }
@@ -145,7 +174,7 @@ public class Game extends AppCompatActivity {
                         ++index;
                     }
                     setUpPuzzle(al);
-                    //Toast.makeText(getApplicationContext(), "Response :" + al.get(0) , Toast.LENGTH_LONG).show();//display the response on screen
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
